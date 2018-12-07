@@ -24,7 +24,8 @@ const UserSchema = new Schema({
   },
   status:{
     type: String,
-    enum: ['new', 'active', 'archived']
+    enum: ['new', 'active', 'archived'],
+    default: 'new'
   }
 },{
   timestamps:{
