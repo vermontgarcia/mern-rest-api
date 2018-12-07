@@ -63,7 +63,7 @@ const index = require('./routes/index');
 const authRouter = require('./routes/auth');
 
 app.use('/', index);
-app.use('/auth', authRouter);
+app.use('/api/auth', authRouter);
 
 // Integrating REACT app into REST API files
 app.all('*', (req, res) => {
