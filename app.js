@@ -34,7 +34,7 @@ app.use(cookieParser());
 //Cors
 
 app.use(cors({
-  origin: ['http://localhost:3000']
+  origin: ['http://localhost:3000','https://compare-it-mern.herokuapp.com']
 }));
 
 
