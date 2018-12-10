@@ -44,7 +44,7 @@ authRouter.post('/login', async (req, res) => {
   
   if(!validPassword) return res.status(500).json({msg: 'Wrong password'});
   
-  const token = jwt.sign({id: user._id}, process.env.SECRET);
+  const token = jwt.sign({id: user._id}, process.env.SECRET, {expiresIn: 60});
   delete user._doc.password;
   
   res.status(200).json({user, token, msg: 'Logged succesfully'});
@@ -68,5 +68,19 @@ authRouter.patch('/edit', upload.single('profilePicture'), (req, res) => {
       res.status(500).json({err});
     });
 });
+
+authRouter.get('/loggedin', (req, res) => {
+
+  const token = req.headers['x-access-token'];
+  if(!token) return res.status(403).json({msg:'No te pases, debes enviar un token'})
+
+  jwt.verify(token, process.env.SECRET, async (err, decoded)=>{
+    //console.log('Decoded ====>', decoded.id)
+    if(err) return res.status(403).json({err, msg:'Sesion expirada'})
+    //req.user = await User.findById(decoded.id)
+    //next();
+    res.status(200).json({msg: 'Valid token'})
+  })
+})
 
 module.exports = authRouter;
