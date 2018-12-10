@@ -20,7 +20,8 @@ const UserSchema = new Schema({
     default: 'user'
   },
   profilePicture:{
-    type: String
+    type: String,
+    default: 'avatar'
   },
   status:{
     type: String,
