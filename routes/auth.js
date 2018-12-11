@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 const upload = require('../helpers/multer');
 
-/* GET Auth routes */
+/* GET & POST Auth routes */
 
 authRouter.post('/signup', (req, res) => {
   if(req.body.password !== req.body.confirmPassword) return res.status(500).json({msg: 'Passwords missmatch'});
