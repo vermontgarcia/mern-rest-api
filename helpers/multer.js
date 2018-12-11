@@ -10,7 +10,7 @@ cloudinary.config({
 
 const storage = Storage({
   cloudinary,
-  folder: 'compareitImages',
+  folder: 'Profile Pictures',
   allowedFormats: ['jpg', 'jpeg', 'gif', 'png']
 });
 
