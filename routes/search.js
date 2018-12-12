@@ -1,4 +1,7 @@
 const express = require('express');
+const aux = require('../helpers/auxFunctions');
+const puppeteer = require('puppeteer');
+
 const searchRouter  = express.Router();
 
 /* GET & POST Search routes */
