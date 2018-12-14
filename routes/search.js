@@ -19,8 +19,9 @@ searchRouter.get('/:product', (req, res) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     
-    await page.goto('https://www.superama.com.mx');
-    
+    await page.goto(`https://www.superama.com.mx/buscar/${req.params.product}`);
+
+    /*
     // Type into search box.
     //await page.type('#searchbox input', 'tortillinas');
     await page.type('#searchBox input', 'tortillinas');
@@ -30,6 +31,8 @@ searchRouter.get('/:product', (req, res) => {
     await page.waitForSelector(searchButton);
     await page.click(searchButton);
     
+    */
+
     // Wait for the results page to load and display the results.
     const resultsSelector = '.isotope-item';
     
@@ -51,7 +54,7 @@ searchRouter.get('/:product', (req, res) => {
     
     await browser.close();
     
-    res.status(200).json({msg: req.params.product})
+    res.status(200).json({items, msg: 'Search executed succesfully'})
   })();
 
 
