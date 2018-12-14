@@ -12,7 +12,7 @@ searchRouter.get('/:product', (req, res) => {
   //console.log('Back',req.params.product)
   //Search Product Script
   (async()=>{
-    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+    const browser = await puppeteer.launch({args:['--no-sandbox']});
     const page = await browser.newPage();
     try{
       await page.goto(`https://www.superama.com.mx/buscar/${req.params.product}`);
