@@ -14,23 +14,23 @@ searchRouter.get('/:product', (req, res) => {
       let items = [];
       const browser = await puppeteer.launch({args:['--no-sandbox']});
       
-      const page1 = await browser.newPage();
-      await page1.goto(`https://www.superama.com.mx/buscar/${req.params.product}`);
+      const superama = await browser.newPage();
+      await superama.goto(`https://www.superama.com.mx/buscar/${req.params.product}`);
 
+      const walmart = await browser.newPage();
+      await walmart.goto(`https://super.walmart.com.mx/productos?Ntt=${req.params.product}`);
+      
       /*
-      const page2 = await browser.newPage();
-      await page2.goto(`https://super.walmart.com.mx/productos?Ntt=${req.params.product}`);
-
       const page3 = await browser.newPage();
       await page3.goto(`http://www.sorianadomicilio.com`);
       */
-
+      
       // Wait for the results page to load and display the results.
       let resultsSelector1 = '.isotope-item';
-      await page1.waitForSelector(resultsSelector1);
+      await superama.waitForSelector(resultsSelector1);
 
       // Extract the results from the page.
-      const itemsSuperama = await page1.evaluate(() =>
+      const itemsSuperama = await superama.evaluate(() =>
         Array.from(document.querySelectorAll( '.isotope-item'))
           .map(item => {
 
@@ -53,16 +53,16 @@ searchRouter.get('/:product', (req, res) => {
         )
       )
 
-      /*
+      ///*
       // Wait for the results page to load and display the results.
-      const resultsSelector2 = '.uQ-k7HpBzPnfbLxnly2YX';
-      await page2.waitForSelector(resultsSelector2);
+      const resultsWalmart = '._3zEPnC-pJyatDRRu2hPGoE';
+      await walmart.waitForSelector(resultsWalmart);
       // Extract the results from the page.
-      const itemsWalmart = await page2.evaluate(() =>
-        Array.from(document.querySelectorAll('.uQ-k7HpBzPnfbLxnly2YX'))
+      const itemsWalmart = await walmart.evaluate(() =>
+        Array.from(document.querySelectorAll('._3zEPnC-pJyatDRRu2hPGoE'))
           .map(item => {
 
-            let link = item.querySelector('.wgFsXe0rWIHJdHC4IodHq a').href;
+            let link = item.querySelector('._3UiJcNPfwkKEBTqJn3N6D3 a').href;
             let upc = link.slice(link.length-13,link.length);
             //console.log ('UPC code =====> ', upc);
             
@@ -70,18 +70,18 @@ searchRouter.get('/:product', (req, res) => {
               market: 'Walmart',
               //upc: item.filter(':hidden').querySelector('upcProducto').nodeValue,
               upc: upc,
-              link: item.querySelector('.wgFsXe0rWIHJdHC4IodHq a').href,
-              image: item.querySelector('.wgFsXe0rWIHJdHC4IodHq img').src ,
-              name: item.querySelector('.wgFsXe0rWIHJdHC4IodHq img').alt,
-              price: item.querySelector('.wKmucxCRgoQZshD8qRUcV p').innerText.trim(),
-              priceNum: parseFloat((item.querySelector('.wKmucxCRgoQZshD8qRUcV p').innerText.trim()).replace('$','')),
+              link: link,
+              image: item.querySelector('._3UiJcNPfwkKEBTqJn3N6D3 img').src ,
+              name: item.querySelector('._3UiJcNPfwkKEBTqJn3N6D3 img').alt,
+              price: item.querySelector('._3URSxitsrGAcwITNRI6nvM').innerText.trim(),
+              priceNum: parseFloat((item.querySelector('._3URSxitsrGAcwITNRI6nvM').innerText.trim()).replace('$','')),
               //  offer: item.querySelector('.upcPrice span').innerText.trim()
             })
           }
         )
       )
 
-      */
+      //*/
 
       /*
 
@@ -122,9 +122,9 @@ searchRouter.get('/:product', (req, res) => {
       */
 
       itemsSuperama.forEach(e => items.push(e));
+      itemsWalmart.forEach(e => items.push(e));
       
       /*
-      itemsWalmart.forEach(e => items.push(e));
       itemsSoriana.forEach(e => items.push(e));
       */
 
