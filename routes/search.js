@@ -20,10 +20,8 @@ searchRouter.get('/:product', (req, res) => {
       const walmart = await browser.newPage();
       await walmart.goto(`https://super.walmart.com.mx/productos?Ntt=${req.params.product}`);
       
-      /*
-      const page3 = await browser.newPage();
-      await page3.goto(`http://www.sorianadomicilio.com`);
-      */
+      const soriana = await browser.newPage();
+      await soriana.goto(`http://www.sorianadomicilio.com`);
       
       // Wait for the results page to load and display the results.
       let resultsSelector1 = '.isotope-item';
@@ -53,7 +51,6 @@ searchRouter.get('/:product', (req, res) => {
         )
       )
 
-      ///*
       // Wait for the results page to load and display the results.
       const resultsWalmart = '._3zEPnC-pJyatDRRu2hPGoE';
       await walmart.waitForSelector(resultsWalmart);
@@ -81,27 +78,32 @@ searchRouter.get('/:product', (req, res) => {
         )
       )
 
-      //*/
 
-      /*
 
-      await page3.type('#Txt_Bsq_Descripcion', req.params.product);
+      ///////
 
-      const searchButton = '.renglonbuscador tbody tr td:last-child input'
+       // Wait for suggest overlay to appear and click "show all results".
+      const closeModal = '.mc-closeModal';
+      await soriana.waitForSelector(closeModal);
+      await soriana.click(closeModal);
 
-      await page3.waitForSelector(searchButton)
-      await page3.click(searchButton)
+      // Type into search box.
+      await soriana.type('#Txt_Bsq_Descripcion', 'tortillinas');
+
+      //Click to perform the search
+      await soriana.click('.renglonbuscador > table > tbody > tr > td:last-child input');
 
       // Wait for the results page to load and display the results.
-      const resultsSelector3 = '.carLi';
-      await page3.waitForSelector(resultsSelector3);
+      const resultsSoriana = '.carLi';
+      await soriana.waitForSelector(resultsSoriana);
+
       // Extract the results from the page.
-      const itemsWalmart = await page3.evaluate(() =>
+      const itemsSoriana = await soriana.evaluate(() =>
         Array.from(document.querySelectorAll('.carLi'))
           .map(item => {
 
             let image = item.querySelector('.artDi3 img').src;
-            let upc = link.slice(link.length-26,link.length-13);
+            let upc = image.slice(image.length-26,image.length-13);
             //console.log ('UPC code =====> ', upc);
             
             return ({
@@ -109,7 +111,7 @@ searchRouter.get('/:product', (req, res) => {
               //upc: item.filter(':hidden').querySelector('upcProducto').nodeValue,
               upc: upc,
               link: item.querySelector('.artDi3 a').href,
-              image: item.querySelector('.artDi3 img').src ,
+              image: image,
               name: item.querySelector('.txtarticulohome').innerText.trim(),
               price: item.querySelector('.precioarticulohome').innerText.trim(),
               priceNum: parseFloat((item.querySelector('.precioarticulohome').innerText.trim()).replace('$','')),
@@ -119,14 +121,9 @@ searchRouter.get('/:product', (req, res) => {
         )
       )
 
-      */
-
       itemsSuperama.forEach(e => items.push(e));
       itemsWalmart.forEach(e => items.push(e));
-      
-      /*
       itemsSoriana.forEach(e => items.push(e));
-      */
 
       console.log(items);
       await browser.close();
