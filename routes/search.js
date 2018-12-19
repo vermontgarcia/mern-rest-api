@@ -88,7 +88,7 @@ searchRouter.get('/:product', (req, res) => {
       await soriana.click(closeModal);
 
       // Type into search box.
-      await soriana.type('#Txt_Bsq_Descripcion', 'tortillinas');
+      await soriana.type('#Txt_Bsq_Descripcion', req.params.product);
 
       //Click to perform the search
       await soriana.click('.renglonbuscador > table > tbody > tr > td:last-child input');
@@ -99,7 +99,7 @@ searchRouter.get('/:product', (req, res) => {
 
       // Extract the results from the page.
       const itemsSoriana = await soriana.evaluate(() =>
-        Array.from(document.querySelectorAll('.carLi'))
+        Array.from(document.querySelectorAll('ul')[2].querySelectorAll('.carLi'))
           .map(item => {
 
             let image = item.querySelector('.artDi3 img').src;
@@ -125,7 +125,7 @@ searchRouter.get('/:product', (req, res) => {
       itemsWalmart.forEach(e => items.push(e));
       itemsSoriana.forEach(e => items.push(e));
 
-      console.log(items);
+      console.log(itemsSoriana);
       await browser.close();
 
       (async function sortItems(all){
