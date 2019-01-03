@@ -20,12 +20,12 @@ searchRouter.get('/:product', (req, res) => {
       const walmart = await browser.newPage();
       await walmart.goto(`https://super.walmart.com.mx/productos?Ntt=${req.params.product}`);
       
-      const soriana = await browser.newPage();
-      await soriana.goto(`http://www.sorianadomicilio.com`);
+      //const soriana = await browser.newPage();
+      //await soriana.goto(`http://www.sorianadomicilio.com`);
       
       // Wait for the results page to load and display the results.
-      let resultsSelector1 = '.isotope-item';
-      await superama.waitForSelector(resultsSelector1);
+      let resultsSuperama = '.isotope-item';
+      await superama.waitForSelector(resultsSuperama);
 
       // Extract the results from the page.
       const itemsSuperama = await superama.evaluate(() =>
@@ -82,6 +82,7 @@ searchRouter.get('/:product', (req, res) => {
 
       ///////
 
+      /*
        // Wait for suggest overlay to appear and click "show all results".
       const closeModal = '.mc-closeModal';
       await soriana.waitForSelector(closeModal);
@@ -121,11 +122,13 @@ searchRouter.get('/:product', (req, res) => {
         )
       )
 
+      */
+
       itemsSuperama.forEach(e => items.push(e));
       itemsWalmart.forEach(e => items.push(e));
-      itemsSoriana.forEach(e => items.push(e));
+      //itemsSoriana.forEach(e => items.push(e));
 
-      console.log(itemsSoriana);
+      //console.log(itemsSoriana);
       await browser.close();
 
       (async function sortItems(all){
