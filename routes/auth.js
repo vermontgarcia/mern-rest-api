@@ -10,7 +10,7 @@ const upload = require('../helpers/multer');
 /* GET & POST Auth routes */
 
 authRouter.post('/signup', (req, res) => {
-  if(req.body.password !== req.body.confirmPassword) return res.status(500).json({msg: 'Passwords missmatch'});
+  if(req.body.password !== req.body.confirm) return res.status(500).json({msg: 'Passwords missmatch'});
 
   const salt = bcrypt.genSaltSync(256);
   const hashedPassword = bcrypt.hashSync(req.body.password, salt);
