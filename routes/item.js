@@ -36,6 +36,7 @@ itemRouter.get('/log/:id', (req, res) => {
   console.log(req.params.id)
 
   Search.find({ userId: req.params.id})
+    .sort({'created_at': -1})
     .then(searches => {
       res.status(200).json({searches, msg: 'Searches retrieved succesfully'})
     })
