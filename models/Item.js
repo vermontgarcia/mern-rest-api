@@ -5,7 +5,7 @@ const ItemSchema = new Schema({
   userId: {
 		type: Schema.Types.ObjectId,
 		ref: 'User',
-		required: 'There is no related user to this reminder'
+		required: 'There is no related user to this item'
 	},
   name: String,
   market: String,

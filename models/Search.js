@@ -5,7 +5,7 @@ const SearchSchema = new Schema({
   userId: {
 		type: Schema.Types.ObjectId,
 		ref: 'User',
-		required: 'There is no related user to this reminder'
+		required: 'There is no related user to search'
 	},
   search: String,
   items: []
