@@ -29,7 +29,6 @@ authRouter.post('/signup', (req, res) => {
     res.status(200).json({msg: 'Listo! Ya eres parte de Compare.it', user, token});
   })
   .catch(err => {
-    console.log('User SingUp Error =====>', err);
     res.status(500).json({err, msg: 'Ouch! Este usuario ya esta registrado'});
   });
 });
@@ -64,7 +63,6 @@ authRouter.patch('/edit', upload.single('profilePicture'), (req, res) => {
       res.status(200).json({user, msg: 'Yes!!! Tus datos ya estan actalizados'});
     })
     .catch(err => {
-      console.log('User update Error =====>', err);
       res.status(500).json({err, msg: 'Ouch! Algo salió mal y no pudimos actualizar tus datos'});
     });
 });
@@ -75,10 +73,7 @@ authRouter.get('/loggedin', (req, res) => {
   if(!token) return res.status(403).json({msg:'Token no recibido'})
 
   jwt.verify(token, process.env.SECRET, async (err, decoded)=>{
-    //console.log('Decoded ====>', decoded.id)
     if(err) return res.status(403).json({err, msg:'Upss! esta sesion ya expiro, asi es mas seguro'})
-    //req.user = await User.findById(decoded.id)
-    //next();
     res.status(200).json({msg: 'Perfecto! Este es un usuario valido'})
   })
 })
