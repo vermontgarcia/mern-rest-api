@@ -62,10 +62,12 @@ app.locals.title = 'Express - Automatic Deploy Test';
 const index = require('./routes/index');
 const authRouter = require('./routes/auth');
 const searchRouter = require('./routes/search');
+const itemRouter = require('./routes/item');
 
 app.use('/', index);
 app.use('/api/auth', authRouter);
 app.use('/api/search', searchRouter);
+app.use('/api/items', itemRouter);
 
 // Integrating REACT app into REST API files
 app.all('*', (req, res) => {
