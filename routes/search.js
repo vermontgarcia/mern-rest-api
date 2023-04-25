@@ -11,63 +11,68 @@ searchRouter.get('/:product', (req, res) => {
   (async()=>{
     try{
       let items = [];
-      const browser = await puppeteer.launch({args:['--no-sandbox']});
+      const browser = await puppeteer.launch({headless: false});
       
-      const superama = await browser.newPage();
-      await superama.goto(`https://www.superama.com.mx/buscar/${req.params.product}`);
+      // const superama = await browser.newPage();
+      // await superama.goto(`https://www.superama.com.mx/buscar/${req.params.product}`);
 
       const walmart = await browser.newPage();
-      await walmart.goto(`https://super.walmart.com.mx/productos?Ntt=${req.params.product}`);
+      await walmart.goto(`https://super.walmart.com.mx/search?q=${req.params.product}`);
       
-      let resultsSuperama = '.isotope-item';
-      await superama.waitForSelector(resultsSuperama);
+      // let resultsSuperama = '.isotope-item';
+      // await superama.waitForSelector(resultsSuperama);
 
-      // Extract the results from the page.
-      const itemsSuperama = await superama.evaluate(() =>
-        Array.from(document.querySelectorAll( '.isotope-item'))
-          .map(item => {
+      // // Extract the results from the page.
+      // const itemsSuperama = await superama.evaluate(() =>
+      //   Array.from(document.querySelectorAll( '.isotope-item'))
+      //     .map(item => {
 
-            let link = item.querySelector('.upcImage a').href;
-            let upc = link.slice(link.length-13,link.length);
+      //       let link = item.querySelector('.upcImage a').href;
+      //       let upc = link.slice(link.length-13,link.length);
             
-            return ({
-              market: 'Superama',
-              upc: upc,
-              link: item.querySelector('.upcImage a').href,
-              image: item.querySelector('.upcImage img').src ,
-              name: item.querySelector('.upcName a').innerText.trim(),
-              price: item.querySelector('.upcPrice').innerText.trim(),
-              priceNum: parseFloat((item.querySelector('.upcPrice').innerText.trim()).replace('$','')),
-            })
-          }
-        )
-      )
+      //       return ({
+      //         market: 'Superama',
+      //         upc: upc,
+      //         link: item.querySelector('.upcImage a').href,
+      //         image: item.querySelector('.upcImage img').src ,
+      //         price: item.querySelector('.upcPrice').innerText.trim(),
+      //         priceNum: parseFloat((item.querySelector('.upcPrice').innerText.trim()).replace('$','')),
+      //       })
+      //     }
+      //   )
+      // )
+      //         name: item.querySelector('.upcName a').innerText.trim(),
 
       // Wait for the results page to load and display the results.
-      const resultsWalmart = '._3zEPnC-pJyatDRRu2hPGoE';
-      await walmart.waitForSelector(resultsWalmart);
+      // const resultsWalmart = 'h2';
+      // await walmart.waitForSelector('div#results-container');
+      const searchResultSelector = 'div.mb0 > div.h-100';
+      await walmart.waitForSelector(searchResultSelector);
       // Extract the results from the page.
       const itemsWalmart = await walmart.evaluate(() =>
-        Array.from(document.querySelectorAll('._3zEPnC-pJyatDRRu2hPGoE'))
+        Array.from(document.querySelectorAll('div.mb0 > div.h-100'))
           .map(item => {
 
-            let link = item.querySelector('._3UiJcNPfwkKEBTqJn3N6D3 a').href;
-            let upc = link.slice(link.length-13,link.length);
+            let link = item.querySelector('a').href;
+            // let upc = link.getAttribute('link-identifier');
             
             return ({
               market: 'Walmart',
-              upc: upc,
+              upc: 'upc',
               link: link,
-              image: item.querySelector('._3UiJcNPfwkKEBTqJn3N6D3 img').src ,
-              name: item.querySelector('._3UiJcNPfwkKEBTqJn3N6D3 img').alt,
-              price: item.querySelector('._3URSxitsrGAcwITNRI6nvM').innerText.trim(),
-              priceNum: parseFloat((item.querySelector('._3URSxitsrGAcwITNRI6nvM').innerText.trim()).replace('$','')),
+              image: item.querySelector('img').src ,
+              name: item.querySelector('img').alt,
+              price: item.querySelector('div[data-automation-id] > div').innerText.trim(),
+              priceNum: parseFloat((item.querySelector('div[data-automation-id] > div').innerText.trim()).replace('$','')),
             })
           }
         )
       )
 
-      itemsSuperama.forEach(e => items.push(e));
+      console.log('items > ', itemsWalmart)
+
+
+      // itemsSuperama.forEach(e => items.push(e));
       itemsWalmart.forEach(e => items.push(e));
 
       await browser.close();
@@ -80,6 +85,7 @@ searchRouter.get('/:product', (req, res) => {
         })(items);
 
     } catch (err) {
+      console.log("Error > ", err)
       res.status(500).json({msg:'Something whent wrong! Try again', err})
     }
   })();
